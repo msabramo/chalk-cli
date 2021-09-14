@@ -54,11 +54,14 @@ const cli = meow(`
 	  $ echo 'Unicorns from stdin' | chalk --stdin red bold
 `, {
 	importMeta: import.meta,
-	// TODO: Disabled until https://github.com/sindresorhus/meow/issues/197 is fixed.
-	// allowUnknownFlags: false,
+	allowUnknownFlags: false,
 	flags: {
+		// TODO: Can be removed when https://github.com/sindresorhus/meow/issues/197 is fixed.
+		help: {type: 'boolean'},
+		version: {type: 'boolean'},
+
 		template: {
-			type: 'string',
+			type: 'boolean',
 			alias: 't',
 		},
 		stdin: {
@@ -109,18 +112,12 @@ function processDataFromArgs() {
 	if (cli.flags.demo) {
 		printAllStyles();
 	} else if (cli.flags.template) {
-		if (cli.input.length === 0) {
-			try {
-				const tagArray = [cli.flags.template];
-				tagArray.raw = tagArray;
-				console.log(chalk(tagArray));
-			} catch (error) {
-				console.error('Something went wrong! Maybe review your syntax?\n');
-				console.error(error.stack);
-				process.exit(1);
-			}
-		} else {
-			console.error('The --template option only accepts 1 argument');
+		try {
+			cli.input.raw = cli.input;
+			console.log(chalk(cli.input));
+		} catch (error) {
+			console.error('Something went wrong! Maybe review your syntax?\n');
+			console.error(error.stack);
 			process.exit(1);
 		}
 	} else {
