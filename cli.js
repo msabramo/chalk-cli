@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const dotProp = require('dot-prop');
 const getStdin = require('get-stdin');
 const meow = require('meow');
+const meowHelp = require('cli-meow-help');
 
 const printAllStyles = () => {
 	const styles = [
@@ -36,44 +37,28 @@ const printAllStyles = () => {
 	console.log(styles.map(style => chalk[style](style)).join(' '));
 };
 
-const cli = meow(`
-	Usage
-	  $ chalk <style> … <string>
-	  $ echo <string> | chalk --stdin <style> …
-
-	Options
-	  --template, -t    Style template. The \`~\` character negates the style.
-	  --stdin           Read input from stdin rather than from arguments.
-	  --no-newline, -n  Don't emit a newline (\`\\n\`) after the input.
-	  --demo            Demo of all Chalk styles.
-
-	Examples
-	  $ chalk red bold 'Unicorns & Rainbows'
-	  $ chalk -t '{red.bold Unicorns & Rainbows}'
-	  $ chalk -t '{red.bold Dungeons and Dragons {~bold.blue (with added fairies)}}'
-	  $ echo 'Unicorns from stdin' | chalk --stdin red bold
-`, {
-	allowUnknownFlags: false,
-	flags: {
-		help: {
-			type: 'boolean'
-		},
-		template: {
-			type: 'string',
-			alias: 't'
-		},
-		stdin: {
-			type: 'boolean'
-		},
-		noNewline: {
-			type: 'boolean',
-			alias: 'n'
-		},
-		demo: {
-			type: 'boolean'
-		}
+const flags = {
+	help: {
+		type: 'boolean'
+	},
+	template: {
+		type: 'string',
+		alias: 't'
+	},
+	stdin: {
+		type: 'boolean'
+	},
+	noNewline: {
+		type: 'boolean',
+		alias: 'n'
+	},
+	demo: {
+		type: 'boolean'
 	}
-});
+};
+
+const helpText = meowHelp({name: 'chalk', flags});
+const cli = meow(helpText, {allowUnknownFlags: false, flags});
 
 const styles = cli.input;
 
