@@ -109,28 +109,36 @@ function processDataFromArgs() {
 	if (cli.flags.demo) {
 		printAllStyles();
 	} else if (cli.flags.template) {
-		if (cli.input.length === 0) {
-			try {
-				const tagArray = [cli.flags.template];
-				tagArray.raw = tagArray;
-				console.log(chalk(tagArray));
-			} catch (error) {
-				console.error('Something went wrong! Maybe review your syntax?\n');
-				console.error(error.stack);
-				process.exit(1);
-			}
-		} else {
-			console.error('The --template option only accepts 1 argument');
+		processTemplate();
+	} else {
+		processRegularText();
+	}
+}
+
+function processTemplate() {
+	if (cli.input.length === 0) {
+		try {
+			const tagArray = [cli.flags.template];
+			tagArray.raw = tagArray;
+			console.log(chalk(tagArray));
+		} catch (error) {
+			console.error('Something went wrong! Maybe review your syntax?\n');
+			console.error(error.stack);
 			process.exit(1);
 		}
 	} else {
-		if (styles.length < 2) {
-			console.error('Input required');
-			process.exit(1);
-		}
-
-		init(styles.pop());
+		console.error('The --template option only accepts 1 argument');
+		process.exit(1);
 	}
+}
+
+function processRegularText() {
+	if (styles.length < 2) {
+		console.error('Input required');
+		process.exit(1);
+	}
+
+	init(styles.pop());
 }
 
 async function processDataFromStdin() {
